@@ -1,0 +1,39 @@
+{
+  "name": "brain",
+  "version": "1.0.0",
+  "description": "Just doin' some learnin' — some machine learnin'. Inspired by this video series by Daniel Shiffman: https://www.youtube.com/watch?v=XJ7HLz9VYz0&list=PLRqwX-V7Uu6Y7MdSCaIfsxc561QI0U0Tb",
+  "main": "dist/index.js",
+  "author": "Peter Sieg <chasingmaxwell@gmail.com>",
+  "license": "MIT",
+  "scripts": {
+    "build": "rm -fr ./dist/* && tsc",
+    "test": "jest --coverage",
+    "lint": "eslint --ext .js,.ts .",
+    "prettier": "prettier --write './src/**/*.{js,ts}' && yarn lint --fix",
+    "learn": "yarn build && node ./dist/index.js",
+    "watch": "nodemon --exec \"yarn learn\" ./src/*.ts"
+  },
+  "devDependencies": {
+    "@commitlint/cli": "^8.3.5",
+    "@commitlint/config-angular": "^8.3.4",
+    "@commitlint/config-conventional": "^8.3.4",
+    "@types/jest": "^24.9.0",
+    "@types/node": "^13.1.8",
+    "@typescript-eslint/eslint-plugin": "^2.16.0",
+    "@typescript-eslint/parser": "^2.16.0",
+    "eslint": "^6.8.0",
+    "eslint-config-prettier": "^6.9.0",
+    "eslint-plugin-prettier": "^3.1.2",
+    "eslint-plugin-security": "^1.4.0",
+    "husky": "^4.2.1",
+    "jest": "^24.9.0",
+    "nodemon": "^2.0.2",
+    "prettier": "^1.19.1",
+    "ts-jest": "^24.3.0",
+    "ts-node": "^8.6.2",
+    "typescript": "^3.7.5"
+  },
+  "dependencies": {
+    "canvas": "^2.6.1"
+  }
+}
