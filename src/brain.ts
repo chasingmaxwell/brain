@@ -38,7 +38,8 @@ export class Perceptron {
 
     // update certainty.
     this.trainingNum = this.trainingNum + 1;
-    this.certainty = (this.trainingNum - this.errorNum) / this.trainingNum;
+    const certaintyTotal = Math.max(100, this.trainingNum);
+    this.certainty = (this.trainingNum - this.errorNum) / certaintyTotal;
 
     return [guess, error];
   }
