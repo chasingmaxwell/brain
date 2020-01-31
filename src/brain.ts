@@ -1,22 +1,24 @@
 export type PerceptronOutput = 1 | -1;
 export type LossFunction = (
-  i1: number,
-  i2: number,
+  inputs: Array<number>,
   guess: PerceptronOutput,
   res: PerceptronOutput,
   error: number
 ) => number;
 export type ActivationFunction = (res: number) => PerceptronOutput;
 export type PerceptronOptions = {
+  inputNum?: number;
   bias?: number;
   learningRate?: number;
   lossFn?: LossFunction;
   activationFn?: ActivationFunction;
 };
 
+const getRandomWeight = (): number => Math.random() * 2 - 1;
+
 export class Perceptron {
-  w1: number;
-  w2: number;
+  inputNum: number;
+  weights: Array<number>;
   bias: number;
   learningRate: number;
   lossFn: LossFunction;
@@ -26,13 +28,16 @@ export class Perceptron {
   errorNum: number;
 
   constructor({
+    inputNum = 2,
     bias = 1,
     learningRate = 0.0001,
     lossFn = (): number => 1,
     activationFn = (res: number): PerceptronOutput => (res >= 0 ? 1 : -1)
   }: PerceptronOptions = {}) {
-    this.w1 = Math.random() * 2 - 1;
-    this.w2 = Math.random() * 2 - 1;
+    this.weights = Array(inputNum)
+      .fill(null)
+      .map(getRandomWeight);
+    this.inputNum = inputNum;
     this.bias = bias;
     this.learningRate = learningRate;
     this.lossFn = lossFn;
@@ -42,22 +47,37 @@ export class Perceptron {
     this.errorNum = 0;
   }
 
+  validateInput(input: Array<number>): void {
+    if (input.length !== this.inputNum) {
+      throw new Error(
+        `Input has ${input.length} items, but should have ${this.inputNum}.`
+      );
+    }
+  }
+
   // @TODO: variable number of inputs.
-  guess(i1: number, i2: number): PerceptronOutput {
-    return this.activationFn(i1 * this.w1 + i2 * this.w2 + this.bias);
+  guess(input: Array<number>): PerceptronOutput {
+    this.validateInput(input);
+    let res = 0;
+    for (let i = 0; i < input.length; i++) {
+      res = res + input[i] * this.weights[i];
+    }
+
+    return this.activationFn(res + this.bias);
   }
 
   train(
-    i1: number,
-    i2: number,
+    input: Array<number>,
     res: PerceptronOutput
   ): [PerceptronOutput, number] {
-    const guess = this.guess(i1, i2);
+    const guess = this.guess(input);
     const error = res - guess;
     if (error !== 0) {
-      const loss = this.lossFn(i1, i2, guess, res, error);
-      this.w1 = this.w1 + error * i1 * loss * this.learningRate;
-      this.w2 = this.w2 + error * i2 * loss * this.learningRate;
+      const loss = this.lossFn(input, guess, res, error);
+      for (let i = 0; i < input.length; i++) {
+        this.weights[i] =
+          this.weights[i] + error * input[i] * loss * this.learningRate;
+      }
       this.errorNum = this.errorNum + 1;
     }
 

@@ -3,7 +3,8 @@ import { Perceptron } from "./brain";
 import { createCanvas } from "canvas";
 
 const perceptron = new Perceptron({
-  lossFn: (i1: number, i2: number): number => (i1 > i2 ? i1 - i2 : i2 - i1)
+  inputNum: 2,
+  lossFn: ([x, y]: Array<number>): number => (x > y ? x - y : y - x)
 });
 
 const canvas = createCanvas(800, 800);
@@ -31,7 +32,7 @@ function redraw(): void {
   ctx.moveTo(0, 0);
   // @TODO: this doesn't take the bias into account but still happens to seem
   // correct. Figure that out!
-  ctx.lineTo(800, -(800 * perceptron.w1) / perceptron.w2);
+  ctx.lineTo(800, -(800 * perceptron.weights[0]) / perceptron.weights[1]);
   ctx.stroke();
 
   ctx.lineWidth = 1;
@@ -45,10 +46,10 @@ function redraw(): void {
   }
 }
 
-function guess(): void {
+function train(): void {
   const x = Math.random() * 800;
   const y = Math.random() * 800;
-  const [guess] = perceptron.train(x, y, x > y ? 1 : -1);
+  const [guess] = perceptron.train([x, y], x > y ? 1 : -1);
   addDot(x, y, guess === 1 ? "green" : "red");
 }
 
@@ -56,12 +57,12 @@ http
   .createServer(function(req, res) {
     if (req.url === "/") {
       res.writeHead(200, { "Content-Type": "text/html" });
-      guess();
+      train();
       redraw();
 
       res.end(
-        `<p><b>weight 1: </b>${perceptron.w1}</p>` +
-          `<p><b>weight 2: </b>${perceptron.w2}</p>` +
+        `<p><b>weight 1: </b>${perceptron.weights[0]}</p>` +
+          `<p><b>weight 2: </b>${perceptron.weights[1]}</p>` +
           `<p><b>certainty: </b>${perceptron.certainty * 100}%</p>` +
           '<img src="' +
           canvas.toDataURL() +
