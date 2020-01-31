@@ -2,6 +2,9 @@ import http from "http";
 import { Perceptron } from "./brain";
 import { createCanvas } from "canvas";
 
+const LIGHT_GREEN = "#a0ffb9";
+const LIGHT_RED = "#ffa0a2";
+
 const perceptron = new Perceptron({
   inputNum: 2,
   lossFn: ([x, y]: Array<number>): number => (x > y ? x - y : y - x)
@@ -46,24 +49,34 @@ function redraw(): void {
   }
 }
 
-function train(): void {
+function train(): [number, number, number, boolean] {
   const x = Math.random() * 800;
   const y = Math.random() * 800;
-  const [guess] = perceptron.train([x, y], x > y ? 1 : -1);
-  addDot(x, y, guess === 1 ? "green" : "red");
+  const [guess, error] = perceptron.train([x, y], x > y ? 1 : -1);
+  addDot(x, y, guess === 1 ? "blue" : "orange");
+  return [x, y, guess, error === 0];
 }
 
 http
   .createServer(function(req, res) {
     if (req.url === "/") {
       res.writeHead(200, { "Content-Type": "text/html" });
-      train();
+      const [x, y, guess, correct] = train();
       redraw();
 
       res.end(
-        `<p><b>weight 1: </b>${perceptron.weights[0]}</p>` +
+        `<div style="float: left;padding-right:1em">` +
+          `<p><b>weight 1: </b>${perceptron.weights[0]}</p>` +
           `<p><b>weight 2: </b>${perceptron.weights[1]}</p>` +
           `<p><b>certainty: </b>${perceptron.certainty * 100}%</p>` +
+          `<p style="background-color:${
+            correct ? LIGHT_GREEN : LIGHT_RED
+          };"><b>last guess:</b>` +
+          `<br />x: ${x}` +
+          `<br />y: ${y}` +
+          `<br />guess: ${guess}` +
+          `</p>` +
+          `</div>` +
           '<img src="' +
           canvas.toDataURL() +
           '" />'
