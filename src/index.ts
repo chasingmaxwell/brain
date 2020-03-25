@@ -7,7 +7,7 @@ const LIGHT_RED = "#ffa0a2";
 
 const perceptron = new Perceptron({
   inputNum: 2,
-  lossFn: ([x, y]: Array<number>): number => (x > y ? x - y : y - x)
+  lossFn: ([x, y]: Array<number>): number => (x > y ? x - y : y - x) / 2
 });
 
 const canvas = createCanvas(800, 800);
@@ -21,6 +21,8 @@ function addDot(x: number, y: number, color: string): void {
 
 function redraw(): void {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
+  ctx.fillStyle = "white";
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
 
   // visualize correct answer
   ctx.strokeStyle = "rgba(0,0,0,0.5)";
@@ -65,7 +67,8 @@ http
       redraw();
 
       res.end(
-        `<div style="float: left;padding-right:1em">` +
+        `<html><body style="background:#eee">` +
+          `<div style="float: left;padding-right:1em">` +
           `<p><b>weight 1: </b>${perceptron.weights[0]}</p>` +
           `<p><b>weight 2: </b>${perceptron.weights[1]}</p>` +
           `<p><b>certainty: </b>${perceptron.certainty * 100}%</p>` +
@@ -79,7 +82,14 @@ http
           `</div>` +
           '<img src="' +
           canvas.toDataURL() +
-          '" />'
+          '" />' +
+          `<p><b>Key:</b><dl>` +
+          `<dt>black line</dt> <dd>A manually drawn line representing the "correct" vector distinguishing between the two halves of the canvas.</dd>` +
+          `<dt>purple line</dt> <dd>A line representing the perceptron's understanding of the vector distinguishing between the two halves of the canvas.</dd>` +
+          `<dt>blue dot</dt> <dd>A dot inserted at randomly generated coordinates which the perceptron has guessed to have been inserted in the top-right half of the canvas.</dd>` +
+          `<dt>yellow dot</dt> <dd>A dot inserted at randomly generated coordinates which the perceptron has guessed to have been inserted in the bottom-left half of the canvas.</dd>` +
+          `</dl></p>` +
+          `</body></html>`
       );
     }
   })

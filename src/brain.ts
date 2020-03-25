@@ -55,7 +55,6 @@ export class Perceptron {
     }
   }
 
-  // @TODO: variable number of inputs.
   guess(input: Array<number>): PerceptronOutput {
     this.validateInput(input);
     let res = 0;
