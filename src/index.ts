@@ -68,7 +68,9 @@ http
 
       res.end(
         `<html><body style="background:#eee">` +
-          `<div style="float: left;padding-right:1em">` +
+          '<div style="float:right;padding-left:1em"><img src="' +
+          canvas.toDataURL() +
+          '" /></div>' +
           `<p><b>weight 1: </b>${perceptron.weights[0]}</p>` +
           `<p><b>weight 2: </b>${perceptron.weights[1]}</p>` +
           `<p><b>certainty: </b>${perceptron.certainty * 100}%</p>` +
@@ -79,12 +81,8 @@ http
           `<br />y: ${y}` +
           `<br />guess: ${guess}` +
           `</p>` +
-          `</div>` +
-          '<img src="' +
-          canvas.toDataURL() +
-          '" />' +
           `<p><b>Key:</b><dl>` +
-          `<dt>black line</dt> <dd>A manually drawn line representing the "correct" vector distinguishing between the two halves of the canvas.</dd>` +
+          `<dt>black line</dt> <dd>A static line representing the "correct" vector distinguishing between the two halves of the canvas.</dd>` +
           `<dt>purple line</dt> <dd>A line representing the perceptron's understanding of the vector distinguishing between the two halves of the canvas.</dd>` +
           `<dt>blue dot</dt> <dd>A dot inserted at randomly generated coordinates which the perceptron has guessed to have been inserted in the top-right half of the canvas.</dd>` +
           `<dt>yellow dot</dt> <dd>A dot inserted at randomly generated coordinates which the perceptron has guessed to have been inserted in the bottom-left half of the canvas.</dd>` +
