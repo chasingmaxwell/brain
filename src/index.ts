@@ -87,6 +87,7 @@ http
           `<dt>blue dot</dt> <dd>A dot inserted at randomly generated coordinates which the perceptron has guessed to have been inserted in the top-right half of the canvas.</dd>` +
           `<dt>yellow dot</dt> <dd>A dot inserted at randomly generated coordinates which the perceptron has guessed to have been inserted in the bottom-left half of the canvas.</dd>` +
           `</dl></p>` +
+          `<p style="text-align:center;margin:2em 0;font-size:24px;font-weight:bold;"><a href="/">Train again!</a></p>` +
           `</body></html>`
       );
     }
